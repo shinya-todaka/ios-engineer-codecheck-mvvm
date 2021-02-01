@@ -42,21 +42,6 @@ class SearchViewController: UITableViewController {
         task?.resume()
     }
     
-    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        // ↓こうすれば初期のテキストを消せる
-        searchBar.text = ""
-        return true
-    }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        task?.cancel()
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let text = searchBar.text, text.count != 0 else { return }
-        fetchRepositories(text: text)
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "Detail" {
@@ -64,9 +49,6 @@ class SearchViewController: UITableViewController {
             detailVC.repo = repos[idx]
         }
     }
-}
-
-extension SearchViewController: UISearchBarDelegate {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return repos.count
@@ -86,6 +68,22 @@ extension SearchViewController: UISearchBarDelegate {
         // 画面遷移時に呼ばれる
         idx = indexPath.row
         performSegue(withIdentifier: "Detail", sender: self)
-        
+    }
+}
+
+extension SearchViewController: UISearchBarDelegate {
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        // ↓こうすれば初期のテキストを消せる
+        searchBar.text = ""
+        return true
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        task?.cancel()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let text = searchBar.text, text.count != 0 else { return }
+        fetchRepositories(text: text)
     }
 }
