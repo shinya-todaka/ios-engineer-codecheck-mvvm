@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UITableViewController, UISearchBarDelegate {
+class ViewController: UITableViewController {
 
     @IBOutlet weak var SchBr: UISearchBar!
     
@@ -64,8 +64,10 @@ class ViewController: UITableViewController, UISearchBarDelegate {
             let dtl = segue.destination as! ViewController2
             dtl.vc1 = self
         }
-        
     }
+}
+
+extension ViewController: UISearchBarDelegate {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return repo.count
@@ -81,12 +83,10 @@ class ViewController: UITableViewController, UISearchBarDelegate {
         return cell
         
     }
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 画面遷移時に呼ばれる
         idx = indexPath.row
         performSegue(withIdentifier: "Detail", sender: self)
         
     }
-    
 }
