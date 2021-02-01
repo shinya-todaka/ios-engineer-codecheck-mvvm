@@ -24,6 +24,24 @@ class SearchViewController: UITableViewController {
         searchBar.delegate = self
     }
     
+    func fetchRepositories(text: String) {
+        let urlString = "https://api.github.com/search/repositories?q=\(text)"
+        
+        guard let url = URL(string: urlString) else { return }
+        
+        task = URLSession.shared.dataTask(with: url) { (data, res, err) in
+            if let obj = try! JSONSerialization.jsonObject(with: data!) as? [String: Any] {
+                if let items = obj["items"] as? [[String: Any]] {
+                self.repos = items
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }
+            }
+        }
+        task?.resume()
+    }
+    
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         // ↓こうすれば初期のテキストを消せる
         searchBar.text = ""
@@ -35,25 +53,8 @@ class SearchViewController: UITableViewController {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        
-        let word = searchBar.text!
-        
-        if word.count != 0 {
-            let url = "https://api.github.com/search/repositories?q=\(word)"
-            task = URLSession.shared.dataTask(with: URL(string: url)!) { (data, res, err) in
-                if let obj = try! JSONSerialization.jsonObject(with: data!) as? [String: Any] {
-                    if let items = obj["items"] as? [[String: Any]] {
-                    self.repos = items
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
-                    }
-                }
-            }
-        // これ呼ばなきゃリストが更新されません
-        task?.resume()
-        }
-        
+        guard let text = searchBar.text, text.count != 0 else { return }
+        fetchRepositories(text: text)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
