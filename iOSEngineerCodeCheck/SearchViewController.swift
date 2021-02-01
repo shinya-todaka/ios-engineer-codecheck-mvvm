@@ -10,7 +10,12 @@ import UIKit
 
 class SearchViewController: UITableViewController {
 
-    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var searchBar: UISearchBar! {
+        didSet {
+            searchBar.placeholder = "GitHubのリポジトリを検索できるよー"
+            searchBar.delegate = self
+        }
+    }
     
     private var items: [Item] = []
     
@@ -19,9 +24,6 @@ class SearchViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        searchBar.text = "GitHubのリポジトリを検索できるよー"
-        searchBar.delegate = self
     }
     
     private func fetchRepositories(text: String) {
@@ -62,16 +64,14 @@ class SearchViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Repository", for: indexPath)
         let repo = items[indexPath.row]
         cell.textLabel?.text = repo.fullName
         cell.detailTextLabel?.text = repo.language
-        cell.tag = indexPath.row
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // 画面遷移時に呼ばれる
         idx = indexPath.row
         performSegue(withIdentifier: "Detail", sender: self)
     }
