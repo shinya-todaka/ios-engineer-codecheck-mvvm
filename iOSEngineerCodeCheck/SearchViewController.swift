@@ -12,10 +12,10 @@ class SearchViewController: UITableViewController {
 
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var repos: [[String: Any]]=[]
+    private var items: [Item] = []
     
-    var task: URLSessionTask?
-    var idx: Int!
+    private var task: URLSessionTask?
+    private var idx: Int!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,19 +24,26 @@ class SearchViewController: UITableViewController {
         searchBar.delegate = self
     }
     
-    func fetchRepositories(text: String) {
+    private func fetchRepositories(text: String) {
         let urlString = "https://api.github.com/search/repositories?q=\(text)"
         
         guard let url = URL(string: urlString) else { return }
         
         task = URLSession.shared.dataTask(with: url) { (data, res, err) in
-            if let obj = try! JSONSerialization.jsonObject(with: data!) as? [String: Any] {
-                if let items = obj["items"] as? [[String: Any]] {
-                self.repos = items
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
+            guard let data = data, err == nil else {
+                print(err ?? "Unknown error")
+                return
+            }
+            
+            do {
+                let searchRepositories = try JSONDecoder().decode(SearchResponse.self, from: data)
+                DispatchQueue.main.async {
+                    self.items = searchRepositories.items
+                    self.tableView.reloadData()
                 }
+            } catch let error {
+                print(error)
+                return
             }
         }
         task?.resume()
@@ -46,24 +53,23 @@ class SearchViewController: UITableViewController {
         
         if segue.identifier == "Detail" {
             let detailVC = segue.destination as! DetailViewController
-            detailVC.repo = repos[idx]
+            detailVC.item = items[idx]
         }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return repos.count
+        return items.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = UITableViewCell()
-        let rp = repos[indexPath.row]
-        cell.textLabel?.text = rp["full_name"] as? String ?? ""
-        cell.detailTextLabel?.text = rp["language"] as? String ?? ""
+        let repo = items[indexPath.row]
+        cell.textLabel?.text = repo.fullName
+        cell.detailTextLabel?.text = repo.language
         cell.tag = indexPath.row
         return cell
-        
     }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 画面遷移時に呼ばれる
         idx = indexPath.row
@@ -73,7 +79,6 @@ class SearchViewController: UITableViewController {
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        // ↓こうすれば初期のテキストを消せる
         searchBar.text = ""
         return true
     }
