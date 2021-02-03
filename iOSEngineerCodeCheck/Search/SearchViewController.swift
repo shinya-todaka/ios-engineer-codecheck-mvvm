@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import APIKit
 
 class SearchViewController: UITableViewController, StoryboardInstantiatable {
 
@@ -18,36 +19,24 @@ class SearchViewController: UITableViewController, StoryboardInstantiatable {
     }
     
     private var items: [Item] = []
-    
-    private var task: URLSessionTask?
+    private var sessionTask: SessionTask?
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
     private func fetchRepositories(text: String) {
-        let urlString = "https://api.github.com/search/repositories?q=\(text)"
-        
-        guard let url = URL(string: urlString) else { return }
-        
-        task = URLSession.shared.dataTask(with: url) { (data, res, err) in
-            guard let data = data, err == nil else {
-                print(err ?? "Unknown error")
-                return
-            }
-            
-            do {
-                let searchRepositories = try JSONDecoder().decode(SearchResponse.self, from: data)
-                DispatchQueue.main.async {
-                    self.items = searchRepositories.items
-                    self.tableView.reloadData()
-                }
-            } catch let error {
-                print(error)
-                return
+        sessionTask = GitHubAPI.call(request: GitHubAPI.SearchRepositories(query: text)) { [weak self] (result) in
+            switch result {
+                case let .failure(error):
+                    print(error)
+                case let .success(response):
+                    DispatchQueue.main.async {
+                        self?.items = response.items
+                        self?.tableView.reloadData()
+                    }
             }
         }
-        task?.resume()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -75,7 +64,7 @@ extension SearchViewController: UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        task?.cancel()
+        sessionTask?.cancel()
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {

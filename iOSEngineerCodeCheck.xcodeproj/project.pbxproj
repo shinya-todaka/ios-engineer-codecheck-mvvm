@@ -17,6 +17,7 @@
 		0B2F328825CAF77C003BA34C /* APIKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0B2F328625CAF77B003BA34C /* APIKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0B2F328D25CAF78A003BA34C /* Nuke.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B2F328C25CAF78A003BA34C /* Nuke.xcframework */; };
 		0B2F328E25CAF78A003BA34C /* Nuke.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0B2F328C25CAF78A003BA34C /* Nuke.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0B2F329325CAF827003BA34C /* GitHubAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2F329225CAF827003BA34C /* GitHubAPI.swift */; };
 		BF0A658D244F2A3B00280FA6 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A658C244F2A3B00280FA6 /* DetailViewController.swift */; };
 		BFD945DF244DC5E80012785A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD945DE244DC5E80012785A /* AppDelegate.swift */; };
 		BFD945E1244DC5E80012785A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD945E0244DC5E80012785A /* SceneDelegate.swift */; };
@@ -68,6 +69,7 @@
 		0B2F327425CA9879003BA34C /* ClassName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassName.swift; sourceTree = "<group>"; };
 		0B2F328625CAF77B003BA34C /* APIKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = APIKit.xcframework; path = Carthage/Build/APIKit.xcframework; sourceTree = "<group>"; };
 		0B2F328C25CAF78A003BA34C /* Nuke.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Nuke.xcframework; path = Carthage/Build/Nuke.xcframework; sourceTree = "<group>"; };
+		0B2F329225CAF827003BA34C /* GitHubAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubAPI.swift; sourceTree = "<group>"; };
 		BF0A658C244F2A3B00280FA6 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		BFD945DB244DC5E80012785A /* iOSEngineerCodeCheck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSEngineerCodeCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD945DE244DC5E80012785A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -156,6 +158,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		0B2F329125CAF815003BA34C /* API */ = {
+			isa = PBXGroup;
+			children = (
+				0B2F329225CAF827003BA34C /* GitHubAPI.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
 		BFD945D2244DC5E80012785A = {
 			isa = PBXGroup;
 			children = (
@@ -180,6 +190,7 @@
 		BFD945DD244DC5E80012785A /* iOSEngineerCodeCheck */ = {
 			isa = PBXGroup;
 			children = (
+				0B2F329125CAF815003BA34C /* API */,
 				0B2F327E25CA988E003BA34C /* Shared */,
 				0B2F323F25CA95D7003BA34C /* Detail */,
 				0B2F323925CA9553003BA34C /* Search */,
@@ -345,6 +356,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFD945E3244DC5E80012785A /* SearchViewController.swift in Sources */,
+				0B2F329325CAF827003BA34C /* GitHubAPI.swift in Sources */,
 				BF0A658D244F2A3B00280FA6 /* DetailViewController.swift in Sources */,
 				BFD945DF244DC5E80012785A /* AppDelegate.swift in Sources */,
 				BFD945E1244DC5E80012785A /* SceneDelegate.swift in Sources */,
