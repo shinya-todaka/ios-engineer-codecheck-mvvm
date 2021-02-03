@@ -10,6 +10,9 @@
 		0B2F2F7525C80625003BA34C /* SearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2F2F7425C80625003BA34C /* SearchResponse.swift */; };
 		0B2F323B25CA9592003BA34C /* SearchViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B2F323A25CA9592003BA34C /* SearchViewController.storyboard */; };
 		0B2F324125CA95E5003BA34C /* DetailViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0B2F324025CA95E5003BA34C /* DetailViewController.storyboard */; };
+		0B2F326125CA97BC003BA34C /* Instantiatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2F326025CA97BC003BA34C /* Instantiatable.swift */; };
+		0B2F326625CA97E3003BA34C /* ClassName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2F326525CA97E3003BA34C /* ClassName.swift */; };
+		0B2F326B25CA9807003BA34C /* Injectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2F326A25CA9807003BA34C /* Injectable.swift */; };
 		BF0A658D244F2A3B00280FA6 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A658C244F2A3B00280FA6 /* DetailViewController.swift */; };
 		BFD945DF244DC5E80012785A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD945DE244DC5E80012785A /* AppDelegate.swift */; };
 		BFD945E1244DC5E80012785A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD945E0244DC5E80012785A /* SceneDelegate.swift */; };
@@ -42,6 +45,9 @@
 		0B2F2F7425C80625003BA34C /* SearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResponse.swift; sourceTree = "<group>"; };
 		0B2F323A25CA9592003BA34C /* SearchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SearchViewController.storyboard; sourceTree = "<group>"; };
 		0B2F324025CA95E5003BA34C /* DetailViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DetailViewController.storyboard; sourceTree = "<group>"; };
+		0B2F326025CA97BC003BA34C /* Instantiatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instantiatable.swift; sourceTree = "<group>"; };
+		0B2F326525CA97E3003BA34C /* ClassName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassName.swift; sourceTree = "<group>"; };
+		0B2F326A25CA9807003BA34C /* Injectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injectable.swift; sourceTree = "<group>"; };
 		BF0A658C244F2A3B00280FA6 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		BFD945DB244DC5E80012785A /* iOSEngineerCodeCheck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSEngineerCodeCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD945DE244DC5E80012785A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -110,6 +116,17 @@
 			path = Detail;
 			sourceTree = "<group>";
 		};
+		0B2F325F25CA96ED003BA34C /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				0B2F326025CA97BC003BA34C /* Instantiatable.swift */,
+				0B2F326525CA97E3003BA34C /* ClassName.swift */,
+				0B2F326A25CA9807003BA34C /* Injectable.swift */,
+			);
+			name = Common;
+			path = "../../ios-engineer-codecheck-test/iOSEngineerCodeCheck/Common";
+			sourceTree = "<group>";
+		};
 		BFD945D2244DC5E80012785A = {
 			isa = PBXGroup;
 			children = (
@@ -133,6 +150,7 @@
 		BFD945DD244DC5E80012785A /* iOSEngineerCodeCheck */ = {
 			isa = PBXGroup;
 			children = (
+				0B2F325F25CA96ED003BA34C /* Common */,
 				0B2F323F25CA95D7003BA34C /* Detail */,
 				0B2F323925CA9553003BA34C /* Search */,
 				0B2F2F6225C8045E003BA34C /* Model */,
@@ -297,8 +315,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B2F326625CA97E3003BA34C /* ClassName.swift in Sources */,
 				BFD945E3244DC5E80012785A /* SearchViewController.swift in Sources */,
 				BF0A658D244F2A3B00280FA6 /* DetailViewController.swift in Sources */,
+				0B2F326125CA97BC003BA34C /* Instantiatable.swift in Sources */,
+				0B2F326B25CA9807003BA34C /* Injectable.swift in Sources */,
 				BFD945DF244DC5E80012785A /* AppDelegate.swift in Sources */,
 				BFD945E1244DC5E80012785A /* SceneDelegate.swift in Sources */,
 				0B2F2F7525C80625003BA34C /* SearchResponse.swift in Sources */,
