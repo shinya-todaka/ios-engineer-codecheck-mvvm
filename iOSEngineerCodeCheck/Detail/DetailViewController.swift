@@ -22,7 +22,7 @@ class DetailViewController: UIViewController, StoryboardInstantiatable, Injectab
     @IBOutlet weak var forksCountLabel: UILabel!
     @IBOutlet weak var issuesCountLabel: UILabel!
     
-    var item: Item!
+    private var item: Item!
     
     func inject(_ dependency: Item) {
         self.item = dependency
