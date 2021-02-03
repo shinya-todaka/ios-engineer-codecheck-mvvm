@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SearchViewController: UITableViewController {
+class SearchViewController: UITableViewController, StoryboardInstantiatable {
 
     @IBOutlet weak var searchBar: UISearchBar! {
         didSet {
@@ -20,7 +20,6 @@ class SearchViewController: UITableViewController {
     private var items: [Item] = []
     
     private var task: URLSessionTask?
-    private var idx: Int!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,14 +50,6 @@ class SearchViewController: UITableViewController {
         task?.resume()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == "Detail" {
-            let detailVC = segue.destination as! DetailViewController
-            detailVC.item = items[idx]
-        }
-    }
-    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
     }
@@ -72,8 +63,8 @@ class SearchViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        idx = indexPath.row
-        performSegue(withIdentifier: "Detail", sender: self)
+        let detailVC = DetailViewController.instantiate(with: items[indexPath.row])
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 

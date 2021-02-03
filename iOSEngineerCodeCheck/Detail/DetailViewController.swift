@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, StoryboardInstantiatable, Injectable {
     
     @IBOutlet weak var profileImageView: UIImageView!
     
@@ -21,14 +21,16 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var forksCountLabel: UILabel!
     @IBOutlet weak var issuesCountLabel: UILabel!
     
-    var item: Item?
+    var item: Item!
+    
+    func inject(_ dependency: Item) {
+        self.item = dependency
+    }
         
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let item = item {
-            configure(item: item)
-        }
+        configure(item: item)
     }
     
     private func configure(item: Item) {
