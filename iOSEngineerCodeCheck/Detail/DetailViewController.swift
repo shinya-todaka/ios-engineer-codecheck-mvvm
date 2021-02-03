@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Nuke
 
 class DetailViewController: UIViewController, StoryboardInstantiatable, Injectable {
     
@@ -41,23 +42,7 @@ class DetailViewController: UIViewController, StoryboardInstantiatable, Injectab
         issuesCountLabel.text = "\(item.openIssuesCount) open issues"
         titleLabel.text = item.fullName
         
-        if let ownerUrl = URL(string: item.owner.avatarUrl) {
-            getImage(url: ownerUrl)
-        }
-    }
-    
-    private func getImage(url: URL){
-        URLSession.shared.dataTask(with: url) { (data, res, err) in
-            guard let data = data, err == nil else {
-                print(err ?? "Unknown error")
-                return
-            }
-            
-            if let avatarImage = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.profileImageView.image = avatarImage
-                }
-            }
-        }.resume()
+        guard let url = URL(string: item.owner.avatarUrl) else { return }
+        Nuke.loadImage(with: url, into: profileImageView)
     }
 }
