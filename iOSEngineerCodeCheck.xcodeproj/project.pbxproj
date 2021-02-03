@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,10 @@
 		0B2F327525CA9879003BA34C /* Instantiatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2F327225CA9878003BA34C /* Instantiatable.swift */; };
 		0B2F327625CA9879003BA34C /* Injectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2F327325CA9879003BA34C /* Injectable.swift */; };
 		0B2F327725CA9879003BA34C /* ClassName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2F327425CA9879003BA34C /* ClassName.swift */; };
+		0B2F328725CAF77C003BA34C /* APIKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B2F328625CAF77B003BA34C /* APIKit.xcframework */; };
+		0B2F328825CAF77C003BA34C /* APIKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0B2F328625CAF77B003BA34C /* APIKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0B2F328D25CAF78A003BA34C /* Nuke.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B2F328C25CAF78A003BA34C /* Nuke.xcframework */; };
+		0B2F328E25CAF78A003BA34C /* Nuke.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0B2F328C25CAF78A003BA34C /* Nuke.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF0A658D244F2A3B00280FA6 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A658C244F2A3B00280FA6 /* DetailViewController.swift */; };
 		BFD945DF244DC5E80012785A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD945DE244DC5E80012785A /* AppDelegate.swift */; };
 		BFD945E1244DC5E80012785A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD945E0244DC5E80012785A /* SceneDelegate.swift */; };
@@ -40,6 +44,21 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		0B2F328925CAF77C003BA34C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				0B2F328E25CAF78A003BA34C /* Nuke.xcframework in Embed Frameworks */,
+				0B2F328825CAF77C003BA34C /* APIKit.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		0B2F2F7425C80625003BA34C /* SearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResponse.swift; sourceTree = "<group>"; };
 		0B2F323A25CA9592003BA34C /* SearchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SearchViewController.storyboard; sourceTree = "<group>"; };
@@ -47,6 +66,8 @@
 		0B2F327225CA9878003BA34C /* Instantiatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instantiatable.swift; sourceTree = "<group>"; };
 		0B2F327325CA9879003BA34C /* Injectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injectable.swift; sourceTree = "<group>"; };
 		0B2F327425CA9879003BA34C /* ClassName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassName.swift; sourceTree = "<group>"; };
+		0B2F328625CAF77B003BA34C /* APIKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = APIKit.xcframework; path = Carthage/Build/APIKit.xcframework; sourceTree = "<group>"; };
+		0B2F328C25CAF78A003BA34C /* Nuke.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Nuke.xcframework; path = Carthage/Build/Nuke.xcframework; sourceTree = "<group>"; };
 		BF0A658C244F2A3B00280FA6 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		BFD945DB244DC5E80012785A /* iOSEngineerCodeCheck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSEngineerCodeCheck.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD945DE244DC5E80012785A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -68,6 +89,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B2F328D25CAF78A003BA34C /* Nuke.xcframework in Frameworks */,
+				0B2F328725CAF77C003BA34C /* APIKit.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,6 +147,15 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
+		0B2F328525CAF77B003BA34C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0B2F328C25CAF78A003BA34C /* Nuke.xcframework */,
+				0B2F328625CAF77B003BA34C /* APIKit.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		BFD945D2244DC5E80012785A = {
 			isa = PBXGroup;
 			children = (
@@ -131,6 +163,7 @@
 				BFD945F4244DC5EB0012785A /* iOSEngineerCodeCheckTests */,
 				BFD945FF244DC5EB0012785A /* iOSEngineerCodeCheckUITests */,
 				BFD945DC244DC5E80012785A /* Products */,
+				0B2F328525CAF77B003BA34C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -188,6 +221,7 @@
 				BFD945D7244DC5E80012785A /* Sources */,
 				BFD945D8244DC5E80012785A /* Frameworks */,
 				BFD945D9244DC5E80012785A /* Resources */,
+				0B2F328925CAF77C003BA34C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
