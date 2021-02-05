@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import Nuke
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, StoryboardInstantiatable, Injectable {
     
     @IBOutlet weak var profileImageView: UIImageView!
     
@@ -21,14 +22,16 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var forksCountLabel: UILabel!
     @IBOutlet weak var issuesCountLabel: UILabel!
     
-    var item: Item?
+    private var item: Item!
+    
+    func inject(_ dependency: Item) {
+        self.item = dependency
+    }
         
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let item = item {
-            configure(item: item)
-        }
+        configure(item: item)
     }
     
     private func configure(item: Item) {
@@ -39,23 +42,7 @@ class DetailViewController: UIViewController {
         issuesCountLabel.text = "\(item.openIssuesCount) open issues"
         titleLabel.text = item.fullName
         
-        if let ownerUrl = URL(string: item.owner.avatarUrl) {
-            getImage(url: ownerUrl)
-        }
-    }
-    
-    private func getImage(url: URL){
-        URLSession.shared.dataTask(with: url) { (data, res, err) in
-            guard let data = data, err == nil else {
-                print(err ?? "Unknown error")
-                return
-            }
-            
-            if let avatarImage = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.profileImageView.image = avatarImage
-                }
-            }
-        }.resume()
+        guard let url = URL(string: item.owner.avatarUrl) else { return }
+        Nuke.loadImage(with: url, into: profileImageView)
     }
 }
