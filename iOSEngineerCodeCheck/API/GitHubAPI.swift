@@ -7,6 +7,7 @@
 //
 
 import APIKit
+import Combine
 
 struct DecodableDataParser<T: Decodable>: DataParser {
     let contentType: String? = "application/json"
@@ -40,10 +41,16 @@ struct GitHubAPI {
         let path: String = "/search/repositories"
         
         var parameters: Any? {
-            return ["q": query]
+            return [
+                    "q": query,
+                    "page": page,
+                    "per_page": perPage
+                    ]
         }
 
         let query: String
+        let page: Int
+        let perPage = 20
         
         func response(from object: Any, urlResponse: HTTPURLResponse) throws -> Response {
             return try (object as? Response) ??
@@ -54,6 +61,19 @@ struct GitHubAPI {
     static func call<T: GitHubRequest>(request: T, completion: @escaping (Result<T.Response, SessionTaskError>) -> Void) -> SessionTask? {
         return Session.send(request) { (result) in
             completion(result)
+        }
+    }
+    
+    static func callWithFuture<T: GitHubRequest>(reqesut: T) -> Future<T.Response, SessionTaskError> {
+        Future<T.Response, SessionTaskError> { promise in
+            Session.send(reqesut) { result in
+                switch result {
+                case let .failure(error):
+                    promise(.failure(error))
+                case let .success(response):
+                    promise(.success(response))
+                }
+            }
         }
     }
 }
