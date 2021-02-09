@@ -31,8 +31,10 @@ class SearchModel: SearchModelProtocol {
     
     let isLoadingSubject = CurrentValueSubject<Bool,Never>(false)
     private var disposables: [AnyCancellable] = []
+    private let gitHubAPI: GitHubAPIProtocol
     
-    init() {
+    init(gitHubAPI: GitHubAPIProtocol = GitHubAPI()) {
+        self.gitHubAPI = gitHubAPI
         
         let _response = PassthroughSubject<GitHubAPI.SearchRepositories.Response?, Never>()
         self.response = _response.eraseToAnyPublisher()
@@ -46,7 +48,7 @@ class SearchModel: SearchModelProtocol {
                 self.isLoadingSubject.send(true)
             })
             .flatMap { request -> AnyPublisher<GitHubAPI.SearchRepositories.Response, SessionTaskError> in
-                Session.shared.publisher(request: request)
+                gitHubAPI.call(request: request)
                     .prefix(1)
                     .eraseToAnyPublisher()
             }

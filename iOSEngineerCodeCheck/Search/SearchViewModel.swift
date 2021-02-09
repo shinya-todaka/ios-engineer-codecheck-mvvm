@@ -43,7 +43,6 @@ class SearchViewModel {
     init(model: SearchModelProtocol = SearchModel(), scheduler: DispatchQueue = DispatchQueue(label: "SearchViewModel")) {
         self.model = model
         
-
         self.repositories = _repositories
             .dropFirst()
             .eraseToAnyPublisher()

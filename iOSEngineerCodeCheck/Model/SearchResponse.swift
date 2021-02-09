@@ -6,7 +6,7 @@
 //  Copyright © 2021 YUMEMI Inc. All rights reserved.
 //
 
-struct SearchResponse: Decodable {
+struct SearchResponse: Decodable, Equatable {
     let repositories: [Repository]
     
     private enum CodingKeys: String, CodingKey {

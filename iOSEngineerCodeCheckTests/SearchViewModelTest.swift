@@ -13,47 +13,23 @@ import Combine
 import EntwineTest
 import CombineExpectations
 
-enum MyError: Error {
-    case unknown
+extension SessionTaskError: Equatable {
+    public static func == (lhs: SessionTaskError, rhs: SessionTaskError) -> Bool {
+        switch (lhs,rhs) {
+        case (.connectionError, .connectionError):
+            return true
+        case (.requestError, .requestError):
+            return true
+        case (.responseError, .responseError):
+            return true
+        default:
+            return false
+        }
+    }
 }
 
-class StubSearchModdel: SearchModelProtocol {
-    var isLoading: AnyPublisher<Bool, Never> {
-        isLoadingSubject.eraseToAnyPublisher()
-    }
-    var isLoadingSubject = CurrentValueSubject<Bool, Never>(false)
-    
-    var error: AnyPublisher<SessionTaskError?, Never>
-    var response: AnyPublisher<GitHubAPI.SearchRepositories.Response?, Never>
-    var requestSubject = PassthroughSubject<GitHubAPI.SearchRepositories, Never>()
-    var disposables: [AnyCancellable] = []
-    
-    init() {
-        let _error = PassthroughSubject<SessionTaskError?, Never>()
-        self.error = _error.eraseToAnyPublisher()
-        
-        let _response = PassthroughSubject<GitHubAPI.SearchRepositories.Response?, Never>()
-        self.response = _response.eraseToAnyPublisher()
-        
-        requestSubject
-            .handleEvents(receiveOutput: { _ in
-                self.isLoadingSubject.send(true)
-            })
-            .flatMap { request -> AnyPublisher<GitHubAPI.SearchRepositories.Response, SessionTaskError> in
-                return self.doSomeNetwork(request: request)
-            }.handleEvents(receiveOutput: { _ in
-                self.isLoadingSubject.send(false)
-            })
-            .sink { _ in } receiveValue: { (response) in
-                _response.send(response)
-            }.store(in: &disposables)
-    }
-    
-    private func doSomeNetwork(request: GitHubAPI.SearchRepositories) -> AnyPublisher<GitHubAPI.SearchRepositories.Response, SessionTaskError> {
-        return Future { promise in
-            promise(.success(.template))
-        }.eraseToAnyPublisher()
-    }
+enum MyError: Error, Equatable {
+    case unknown
 }
 
 class SearchViewModelTest: XCTestCase {

@@ -31,8 +31,11 @@ extension GitHubRequest where Response: Decodable {
     }
 }
 
-struct GitHubAPI {
-    private init () {}
+protocol GitHubAPIProtocol {
+    func call<T: GitHubRequest>(request: T) -> AnyPublisher<T.Response, SessionTaskError>
+}
+
+struct GitHubAPI: GitHubAPIProtocol {
     
     struct SearchRepositories: GitHubRequest {
         typealias Response = SearchResponse
@@ -58,23 +61,8 @@ struct GitHubAPI {
         }
     }
     
-    static func call<T: GitHubRequest>(request: T, completion: @escaping (Result<T.Response, SessionTaskError>) -> Void) -> SessionTask? {
-        return Session.send(request) { (result) in
-            completion(result)
-        }
-    }
-    
-    static func callWithFuture<T: GitHubRequest>(reqesut: T) -> Future<T.Response, SessionTaskError> {
-        Future<T.Response, SessionTaskError> { promise in
-            Session.send(reqesut) { result in
-                switch result {
-                case let .failure(error):
-                    promise(.failure(error))
-                case let .success(response):
-                    promise(.success(response))
-                }
-            }
-        }
+    func call<T: GitHubRequest>(request: T) -> AnyPublisher<T.Response, SessionTaskError> {
+        return Session.shared.publisher(request: request).eraseToAnyPublisher()
     }
 }
 
