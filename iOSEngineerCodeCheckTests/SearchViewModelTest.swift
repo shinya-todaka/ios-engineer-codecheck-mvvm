@@ -18,22 +18,41 @@ enum MyError: Error {
 }
 
 class StubSearchModdel: SearchModelProtocol {
+    var isLoading: AnyPublisher<Bool, Never> {
+        isLoadingSubject.eraseToAnyPublisher()
+    }
+    var isLoadingSubject = CurrentValueSubject<Bool, Never>(false)
+    
     var error: AnyPublisher<SessionTaskError?, Never>
     var response: AnyPublisher<GitHubAPI.SearchRepositories.Response?, Never>
     var requestSubject = PassthroughSubject<GitHubAPI.SearchRepositories, Never>()
     var disposables: [AnyCancellable] = []
     
     init() {
-        var _error = PassthroughSubject<SessionTaskError?, Never>()
+        let _error = PassthroughSubject<SessionTaskError?, Never>()
         self.error = _error.eraseToAnyPublisher()
         
-        var _response = PassthroughSubject<GitHubAPI.SearchRepositories.Response?, Never>()
+        let _response = PassthroughSubject<GitHubAPI.SearchRepositories.Response?, Never>()
         self.response = _response.eraseToAnyPublisher()
         
-        requestSubject.sink { [weak self] _ in
-            guard let self = self else { return }
-            _response.send(SearchResponse.template)
-        }.store(in: &disposables)
+        requestSubject
+            .handleEvents(receiveOutput: { _ in
+                self.isLoadingSubject.send(true)
+            })
+            .flatMap { request -> AnyPublisher<GitHubAPI.SearchRepositories.Response, SessionTaskError> in
+                return self.doSomeNetwork(request: request)
+            }.handleEvents(receiveOutput: { _ in
+                self.isLoadingSubject.send(false)
+            })
+            .sink { _ in } receiveValue: { (response) in
+                _response.send(response)
+            }.store(in: &disposables)
+    }
+    
+    private func doSomeNetwork(request: GitHubAPI.SearchRepositories) -> AnyPublisher<GitHubAPI.SearchRepositories.Response, SessionTaskError> {
+        return Future { promise in
+            promise(.success(.template))
+        }.eraseToAnyPublisher()
     }
 }
 
@@ -45,13 +64,10 @@ class SearchViewModelTest: XCTestCase {
         let model = StubSearchModdel()
         let viewModel = SearchViewModel(model: model)
         
-        // 1. Create a publisher
         let publisher = viewModel.repositories
           
-          // 2. Start recording the publisher
         let recorder = publisher.record()
           
-          // 3. Wait for a publisher expectation
         viewModel.textToSearch.send("swift")
         try XCTAssertEqual(recorder.next().get(), [])
         try XCTAssertEqual(recorder.next().get(), SearchResponse.template.repositories)
@@ -78,5 +94,20 @@ class SearchViewModelTest: XCTestCase {
         viewModel.textToSearch.send("c")
         try XCTAssertEqual(recorder.next().get(), [])
         try XCTAssertEqual(recorder.next().get(), SearchResponse.template.repositories)
+    }
+    
+    func test_ネットワーク処理をするときにisLoadingが更新されるか確認() {
+        let model = StubSearchModdel()
+        let viewModel = SearchViewModel(model: model)
+        
+        let publisher = viewModel.isLoading
+        
+        let recorder = publisher.record()
+        
+        try XCTAssertEqual(recorder.next().get(), false)
+        
+        viewModel.textToSearch.send("swift")
+        try XCTAssertEqual(recorder.next().get(), true)
+        try XCTAssertEqual(recorder.next().get(), false)
     }
 }
