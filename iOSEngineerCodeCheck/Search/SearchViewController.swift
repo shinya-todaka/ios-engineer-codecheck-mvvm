@@ -22,17 +22,38 @@ class SearchViewController: UITableViewController, StoryboardInstantiatable {
     
     private var viewModel = SearchViewModel()
     private var disposables: [AnyCancellable] = []
+    private let footerId = "footerId"
+    
+    private let indicatorView: UIActivityIndicatorView = {
+        let aiv = UIActivityIndicatorView(style: .large)
+        aiv.color = .gray
+        aiv.startAnimating()
+        return aiv
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupViews()
         
         viewModel.repositories
             // I don't know why but sink is not called without receive(on: DispatchQueue.main)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                guard let self = self else { return }
-            self.tableView.reloadData()
+                self?.tableView.reloadData()
         }.store(in: &disposables)
+        
+        viewModel.isLoading
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isLoading in
+                isLoading ? self?.indicatorView.startAnimating() : self?.indicatorView.stopAnimating()
+                self?.tableView.tableFooterView?.isHidden = !isLoading
+            }.store(in: &disposables)
+    }
+    
+    private func setupViews() {
+        indicatorView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 44)
+        tableView.tableFooterView = indicatorView
     }
     
     private func fetchRepositories(text: String) {
@@ -60,10 +81,6 @@ class SearchViewController: UITableViewController, StoryboardInstantiatable {
         let maxScrollDistance = max(0, scrollView.contentSize.height - scrollView.bounds.size.height)
         let isReachedBottom = maxScrollDistance <= scrollView.contentOffset.y
         viewModel.reachedBottom.send(isReachedBottom)
-    }
-    
-    deinit {
-        print("deinit viewController")
     }
 }
 

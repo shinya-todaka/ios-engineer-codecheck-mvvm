@@ -24,6 +24,14 @@ class SearchViewModel {
         model.error
     }
     
+    var isLoading: AnyPublisher<Bool, Never> {
+        model.isLoading
+    }
+    
+    var isLoadingValue: Bool {
+        model.isLoadingSubject.value
+    }
+    
     private let _repositories = CurrentValueSubject<[Repository], Never>([])
     private(set) var repositories: AnyPublisher<[Repository],Never>
     
@@ -34,6 +42,7 @@ class SearchViewModel {
     
     init(model: SearchModelProtocol = SearchModel(), scheduler: DispatchQueue = DispatchQueue(label: "SearchViewModel")) {
         self.model = model
+        
 
         self.repositories = _repositories
             .dropFirst()

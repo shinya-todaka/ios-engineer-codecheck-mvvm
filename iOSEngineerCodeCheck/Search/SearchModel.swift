@@ -11,6 +11,8 @@ import APIKit
 
 protocol SearchModelProtocol {
     var error: AnyPublisher<SessionTaskError?, Never> { get }
+    var isLoading: AnyPublisher<Bool, Never> { get }
+    var isLoadingSubject: CurrentValueSubject<Bool,Never> { get }
     var response: AnyPublisher<GitHubAPI.SearchRepositories.Response?, Never> { get }
     var requestSubject: PassthroughSubject<GitHubAPI.SearchRepositories, Never> { get set }
 }
@@ -21,8 +23,13 @@ class SearchModel: SearchModelProtocol {
     var requestSubject = PassthroughSubject<GitHubAPI.SearchRepositories,Never>()
     
     // output
-    var response: AnyPublisher<GitHubAPI.SearchRepositories.Response?, Never>
-    var error: AnyPublisher<SessionTaskError?,Never>
+    let response: AnyPublisher<GitHubAPI.SearchRepositories.Response?, Never>
+    let error: AnyPublisher<SessionTaskError?,Never>
+    var isLoading: AnyPublisher<Bool, Never> {
+        isLoadingSubject.eraseToAnyPublisher()
+    }
+    
+    let isLoadingSubject = CurrentValueSubject<Bool,Never>(false)
     private var disposables: [AnyCancellable] = []
     
     init() {
@@ -34,11 +41,19 @@ class SearchModel: SearchModelProtocol {
         self.error = _error.eraseToAnyPublisher()
         
         requestSubject
+            .handleEvents(receiveOutput: { [weak self] _ in
+                guard let self = self else { return }
+                self.isLoadingSubject.send(true)
+            })
             .flatMap { request -> AnyPublisher<GitHubAPI.SearchRepositories.Response, SessionTaskError> in
                 Session.shared.publisher(request: request)
                     .prefix(1)
                     .eraseToAnyPublisher()
             }
+            .handleEvents(receiveOutput: { [weak self] _ in
+                guard let self = self else { return }
+                self.isLoadingSubject.send(false)
+            })
             .sink { (completion) in
                 switch completion {
                 case let .failure(error):
