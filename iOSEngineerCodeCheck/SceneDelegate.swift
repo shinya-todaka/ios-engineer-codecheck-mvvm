@@ -22,6 +22,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: scene)
         self.window = window
         window.makeKeyAndVisible()
+        
+        do {
+            let vc = SearchViewController()
+        }
 
         let vc = UINavigationController(rootViewController: SearchViewController.instantiate())
         window.rootViewController = vc

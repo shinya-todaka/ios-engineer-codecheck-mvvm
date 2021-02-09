@@ -13,23 +13,37 @@ class SearchViewModel {
     
     // input
     var textToSearch = PassthroughSubject<String, Never>()
-    var reachedBottom = PassthroughSubject<Bool, Never>()
+    var reachedBottom = CurrentValueSubject<Bool, Never>(false)
    
     // output
-    @Published private(set) var items: [Item] = []
-    @Published private(set) var error: SessionTaskError?
+    var repositoriesValue: [Repository] {
+        _repositories.value
+    }
+    
+    var error: AnyPublisher<SessionTaskError?, Never> {
+        model.error
+    }
+    
+    private let _repositories = CurrentValueSubject<[Repository], Never>([])
+    private(set) var repositories: AnyPublisher<[Repository],Never>
+    
+    private let currentPage = CurrentValueSubject<Int,Never>(1)
     
     private var disposables: [AnyCancellable] = []
-    private var currentPage = CurrentValueSubject<Int, Never>(1)
+    private let model: SearchModelProtocol
     
-    private let model = SearchModel()
-    
-    init(scheduler: DispatchQueue = DispatchQueue(label: "SearchViewModel")) {
+    init(model: SearchModelProtocol = SearchModel(), scheduler: DispatchQueue = DispatchQueue(label: "SearchViewModel")) {
+        self.model = model
+
+        self.repositories = _repositories
+            .dropFirst()
+            .eraseToAnyPublisher()
+        
         let searchTrigger = textToSearch
             .filter { !$0.isEmpty }
             .handleEvents(receiveOutput: { [weak self] _ in
                 guard let self = self else { return }
-                self.items = []
+                self._repositories.send([])
             })
             .share()
         
@@ -42,7 +56,6 @@ class SearchViewModel {
         let additionalFetchTrigger = reachedBottom
             .removeDuplicates()
             .filter { $0 }
-            .debounce(for: .seconds(0.5), scheduler: scheduler)
             .withLatestFrom(additionalSearchParameters) { $1 }
             .map { GitHubAPI.SearchRepositories(query: $0, page: $1) }
         
@@ -50,18 +63,19 @@ class SearchViewModel {
             .Merge(initialFetchTrigger, additionalFetchTrigger)
             .sink { [weak self] request in
                 guard let self = self else { return }
-                self.model.fetch(request: request)
+                self.model.requestSubject.send(request)
             }.store(in: &disposables)
         
-        model.$error
-            .assign(to: &$error)
-        
-        model.$response
+        model.response
+            .compactMap { $0 }
             .sink { [weak self] (response) in
                 guard let self = self else { return }
                 self.currentPage.value += 1
-                self.items = self.items + (response?.items ?? [])
+                self._repositories.send(self._repositories.value + response.repositories)
             }.store(in: &disposables)
-            
+    }
+    
+    deinit {
+        print("deinit viewModel")
     }
 }

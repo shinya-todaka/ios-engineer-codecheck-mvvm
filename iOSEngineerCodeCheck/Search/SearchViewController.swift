@@ -26,11 +26,11 @@ class SearchViewController: UITableViewController, StoryboardInstantiatable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewModel.$items
+        viewModel.repositories
             // I don't know why but sink is not called without receive(on: DispatchQueue.main)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                guard let self = self else { print("self is nil"); return }
+                guard let self = self else { return }
             self.tableView.reloadData()
         }.store(in: &disposables)
     }
@@ -40,19 +40,19 @@ class SearchViewController: UITableViewController, StoryboardInstantiatable {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.items.count
+        return viewModel.repositoriesValue.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Repository", for: indexPath)
-        let repo = viewModel.items[indexPath.row]
+        let repo = viewModel.repositoriesValue[indexPath.row]
         cell.textLabel?.text = repo.fullName
         cell.detailTextLabel?.text = repo.language
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let detailVC = DetailViewController.instantiate(with: viewModel.items[indexPath.row])
+        let detailVC = DetailViewController.instantiate(with: viewModel.repositoriesValue[indexPath.row])
         navigationController?.pushViewController(detailVC, animated: true)
     }
     
@@ -60,6 +60,10 @@ class SearchViewController: UITableViewController, StoryboardInstantiatable {
         let maxScrollDistance = max(0, scrollView.contentSize.height - scrollView.bounds.size.height)
         let isReachedBottom = maxScrollDistance <= scrollView.contentOffset.y
         viewModel.reachedBottom.send(isReachedBottom)
+    }
+    
+    deinit {
+        print("deinit viewController")
     }
 }
 

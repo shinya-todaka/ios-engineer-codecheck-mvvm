@@ -9,40 +9,45 @@
 import Combine
 import APIKit
 
-class SearchModel {
+protocol SearchModelProtocol {
+    var error: AnyPublisher<SessionTaskError?, Never> { get }
+    var response: AnyPublisher<GitHubAPI.SearchRepositories.Response?, Never> { get }
+    var requestSubject: PassthroughSubject<GitHubAPI.SearchRepositories, Never> { get set }
+}
+
+class SearchModel: SearchModelProtocol {
     
     // input
-    private var requestSubject = PassthroughSubject<GitHubAPI.SearchRepositories,Never>()
+    var requestSubject = PassthroughSubject<GitHubAPI.SearchRepositories,Never>()
     
     // output
-    @Published private(set) var error: SessionTaskError?
-    @Published private(set) var response: GitHubAPI.SearchRepositories.Response?
-    
+    var response: AnyPublisher<GitHubAPI.SearchRepositories.Response?, Never>
+    var error: AnyPublisher<SessionTaskError?,Never>
     private var disposables: [AnyCancellable] = []
     
     init() {
+        
+        let _response = PassthroughSubject<GitHubAPI.SearchRepositories.Response?, Never>()
+        self.response = _response.eraseToAnyPublisher()
+        
+        let _error = PassthroughSubject<SessionTaskError?, Never>()
+        self.error = _error.eraseToAnyPublisher()
+        
         requestSubject
             .flatMap { request -> AnyPublisher<GitHubAPI.SearchRepositories.Response, SessionTaskError> in
                 Session.shared.publisher(request: request)
                     .prefix(1)
                     .eraseToAnyPublisher()
             }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] (completion) in
-                guard let self = self else { return }
+            .sink { (completion) in
                 switch completion {
                 case let .failure(error):
-                    self.error = error
+                    _error.send(error)
                 case .finished:
                     break
                 }
-            } receiveValue: { [weak self] (response) in
-                guard let self = self else { return }
-                self.response = response
+            } receiveValue: { (res) in
+                _response.send(res)
             }.store(in: &disposables)
-    }
-    
-    func fetch(request: GitHubAPI.SearchRepositories) {
-        self.requestSubject.send(request)
     }
 }

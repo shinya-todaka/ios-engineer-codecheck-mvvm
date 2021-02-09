@@ -22,27 +22,27 @@ class DetailViewController: UIViewController, StoryboardInstantiatable, Injectab
     @IBOutlet weak var forksCountLabel: UILabel!
     @IBOutlet weak var issuesCountLabel: UILabel!
     
-    private var item: Item!
+    private var repository: Repository!
     
-    func inject(_ dependency: Item) {
-        self.item = dependency
+    func inject(_ dependency: Repository) {
+        self.repository = dependency
     }
         
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configure(item: item)
+        configure(repository: repository)
     }
     
-    private func configure(item: Item) {
-        languageLabel.text = item.language.map { "Written in \($0)" }
-        starsCountLabel.text = "\(item.stargazersCount) stars"
-        watchersCountLabel.text = "\(item.watchersCount) watchers"
-        forksCountLabel.text = "\(item.forksCount) forks"
-        issuesCountLabel.text = "\(item.openIssuesCount) open issues"
-        titleLabel.text = item.fullName
+    private func configure(repository: Repository) {
+        languageLabel.text = repository.language.map { "Written in \($0)" }
+        starsCountLabel.text = "\(repository.stargazersCount) stars"
+        watchersCountLabel.text = "\(repository.watchersCount) watchers"
+        forksCountLabel.text = "\(repository.forksCount) forks"
+        issuesCountLabel.text = "\(repository.openIssuesCount) open issues"
+        titleLabel.text = repository.fullName
         
-        guard let url = URL(string: item.owner.avatarUrl) else { return }
+        guard let url = URL(string: repository.owner.avatarUrl) else { return }
         Nuke.loadImage(with: url, into: profileImageView)
     }
 }
