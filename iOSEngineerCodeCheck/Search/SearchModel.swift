@@ -30,6 +30,7 @@ class SearchModel: SearchModelProtocol {
     }
     
     let isLoadingSubject = CurrentValueSubject<Bool,Never>(false)
+    
     private var disposables: [AnyCancellable] = []
     private let gitHubAPI: GitHubAPIProtocol
     

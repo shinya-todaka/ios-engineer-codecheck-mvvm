@@ -37,7 +37,7 @@ class SearchViewController: UITableViewController, StoryboardInstantiatable {
         setupViews()
         
         viewModel.repositories
-            // I don't know why but sink is not called without receive(on: DispatchQueue.main)
+            // I don't know why but sink is not called first without receive(on: DispatchQueue.main)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.tableView.reloadData()
